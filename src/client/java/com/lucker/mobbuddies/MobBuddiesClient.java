@@ -15,12 +15,6 @@ public class MobBuddiesClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
 
-//		EntityRendererRegistry.INSTANCE.register(MobBuddies.ZOMBIE_BUDDY, (context) ->{
-//			return new ZombieBuddyEntityRenderer(context);
-//		});;
-//
-//		EntityModelLayerRegistry.registerModelLayer(MODEL_ZOMBIE_BUDDY_LAYER, ZombieBuddyEntityModel::getTexturedModelData);
-
 		EntityRendererRegistry.register(MobBuddies.CUBE, CubeEntityRenderer::new);
 		EntityRendererRegistry.register(MobBuddies.ZOMBIE_BUDDY, ZombieBuddyEntityRenderer::new);
 

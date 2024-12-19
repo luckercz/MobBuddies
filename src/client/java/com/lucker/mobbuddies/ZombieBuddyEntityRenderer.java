@@ -11,9 +11,6 @@ public class ZombieBuddyEntityRenderer extends MobEntityRenderer<ZombieBuddyEnti
 
     public ZombieBuddyEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new ZombieEntityModel<ZombieBuddyEntity>(context.getPart(EntityModelLayers.ZOMBIE) ), 1);
-
-        //TEST
-        //super(context, new ZombieEntityModel<ZombieBuddyEntity>(context.getPart(MobBuddiesClient.MODEL_ZOMBIE_BUDDY_LAYER) ), 1);
     }
 
     @Override
