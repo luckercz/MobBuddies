@@ -2,16 +2,17 @@ package com.lucker.mobbuddies;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.FollowOwnerGoal;
-import net.minecraft.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
-import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.entity.mob.PathAwareEntity;
+
+import java.util.EnumSet;
+
 
 public class ZombieBuddyEntity extends ZombieEntity {
 
@@ -41,15 +42,17 @@ public class ZombieBuddyEntity extends ZombieEntity {
 
     @Override
     protected void initGoals() {
-        this.goalSelector.add(1, new MeleeAttackGoal(this, 1.0D, true));
-        //this.goalSelector.add(2, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F));
+        this.targetSelector.add(1, new ActiveTargetGoal<>(this, net.minecraft.entity.mob.HostileEntity.class, true));
+
+        this.goalSelector.add(1, new ZombieAttackGoal(this, 1.0D, true));
+        //this.goalSelector.add(2, new FollowOwnerGoal(this, 1.0D, 1.0F, 5.0F)); // ADD FOLLOW
         this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0D));
     }
 
     @Override
     public boolean canTarget(EntityType<?> type) {
-        return super.canTarget(type) && type != EntityType.PLAYER; // Only attack entities that are not players.
+        return type != EntityType.PLAYER; // Only attack entities that are not players.
     }
 
     @Override
