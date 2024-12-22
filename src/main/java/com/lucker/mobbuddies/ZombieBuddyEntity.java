@@ -23,6 +23,7 @@ public class ZombieBuddyEntity extends ZombieEntity {
     }
 
     public static ZombieBuddyEntity create(World world, PlayerEntity owner, BlockPos pos) {
+        MobBuddies.LOGGER.info("Create zombie buddy");
         ZombieBuddyEntity zombieBuddy = new ZombieBuddyEntity(EntityType.ZOMBIE, world);
         zombieBuddy.refreshPositionAndAngles(pos, 0.0F, 0.0F);
         if (world instanceof ServerWorld) {
@@ -45,14 +46,15 @@ public class ZombieBuddyEntity extends ZombieEntity {
         this.targetSelector.add(1, new ActiveTargetGoal<>(this, net.minecraft.entity.mob.HostileEntity.class, true));
 
         this.goalSelector.add(1, new ZombieAttackGoal(this, 1.0D, true));
-        //this.goalSelector.add(2, new FollowOwnerGoal(this, 1.0D, 1.0F, 5.0F)); // ADD FOLLOW
+        //this.goalSelector.add(1, new FollowOwnerGoal(this, owner, 1.0D, 3.0F, 15.0F)); // ADD FOLLOW
         this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0D));
     }
 
     @Override
     public boolean canTarget(EntityType<?> type) {
-        return type != EntityType.PLAYER; // Only attack entities that are not players.
+        return true;
+        //return type != EntityType.PLAYER; // Only attack entities that are not players.
     }
 
     @Override
@@ -76,4 +78,8 @@ public class ZombieBuddyEntity extends ZombieEntity {
         return true;
     }
 
+    @Override
+    protected boolean burnsInDaylight(){
+        return false;
+    }
 }
