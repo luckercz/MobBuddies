@@ -39,7 +39,11 @@ public class MobBuddies implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 
+		//Initialize Buddies
 		FabricDefaultAttributeRegistry.register(ZOMBIE_BUDDY, ZombieBuddyEntity.createZombieAttributes());
 		FabricDefaultAttributeRegistry.register(CUBE, CubeEntity.createMobAttributes());
+
+		//Initialize Items
+		ModItems.initialize();
 	}
 }
