@@ -9,8 +9,8 @@ import net.minecraft.util.Identifier;
 
 public class ModItems {
     public static void initialize(){
-        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-                .register((itemGroup) -> itemGroup.add(ModItems.SUMMONERS_BOOK));
+//        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
+//                .register((itemGroup) -> itemGroup.add(ModItems.SUMMONERS_BOOK));
     }
 
     public static final Item SUMMONERS_BOOK = register(
