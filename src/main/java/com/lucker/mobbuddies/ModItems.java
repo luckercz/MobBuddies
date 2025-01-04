@@ -11,11 +11,26 @@ public class ModItems {
     public static void initialize(){
 //        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
 //                .register((itemGroup) -> itemGroup.add(ModItems.SUMMONERS_BOOK));
+
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS)
+                .register((itemGroup) -> itemGroup.add(ModItems.MOB_ENERGY_RAW));
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS)
+                .register((itemGroup) -> itemGroup.add(ModItems.MOB_ENERGY_INGOT));
     }
 
     public static final Item SUMMONERS_BOOK = register(
             new Item(new Item.Settings()),
             "summoners_book"
+    );
+
+    public static final Item MOB_ENERGY_INGOT = register(
+            new Item(new Item.Settings()),
+            "mob_energy_ingot"
+    );
+
+    public static final Item MOB_ENERGY_RAW = register(
+            new Item(new Item.Settings()),
+            "mob_energy_raw"
     );
 
     public static Item register(Item item, String id){

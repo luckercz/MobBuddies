@@ -1,3 +1,6 @@
 {
-  "item.mob-buddies.summoners_book": "Summoner's book"
+  "item.mob-buddies.summoners_book": "Summoner's book",
+  "item.mob-buddies.mob_energy_ingot": "Mob Energy Ingot",
+  "item.mob-buddies.mob_energy_raw": "Raw Mob Energy",
+  "block.mob-buddies.mob_energy_ore": "Mob Energy Ore"
 }

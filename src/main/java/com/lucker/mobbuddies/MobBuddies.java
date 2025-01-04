@@ -45,5 +45,8 @@ public class MobBuddies implements ModInitializer {
 
 		//Initialize Items
 		ModItems.initialize();
+
+		//Initialize Blocks
+		ModBlocks.initialize();
 	}
 }

@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "mob-buddies:block/mob_energy_ore" }
+  }
+}
