@@ -14,6 +14,7 @@ import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -99,9 +100,10 @@ public class MobBuddies implements ModInitializer {
 		BlockPos blockPos = BlockPos.ofFloored(pos);
 
 		String choice = StringArgumentType.getString(context, "choice");
+		PlayerEntity player = source.getPlayer();
 
 		if(choice.equals("zombie-buddy")) {
-			ZOMBIE_BUDDY.spawn(world, blockPos, SpawnReason.COMMAND);
+			ZombieBuddyEntity.create(world, player, blockPos);
 			source.sendFeedback(()->Text.literal("Summoned a zombie buddy!"), true);
 		}
 		else if(choice.equals("notin")) {

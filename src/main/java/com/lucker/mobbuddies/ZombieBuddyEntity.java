@@ -7,6 +7,7 @@ import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -23,13 +24,14 @@ public class ZombieBuddyEntity extends ZombieEntity {
     }
 
     public static ZombieBuddyEntity create(World world, PlayerEntity owner, BlockPos pos) {
-        MobBuddies.LOGGER.info("Create zombie buddy");
-        ZombieBuddyEntity zombieBuddy = new ZombieBuddyEntity(EntityType.ZOMBIE, world);
+        MobBuddies.LOGGER.info("Createasdad zombie buddy");
+        ZombieBuddyEntity zombieBuddy = new ZombieBuddyEntity(MobBuddies.ZOMBIE_BUDDY, world);
         zombieBuddy.refreshPositionAndAngles(pos, 0.0F, 0.0F);
+        zombieBuddy.setOwner(owner);
+        zombieBuddy.setCustomName(Text.of("zombuebud"));
         if (world instanceof ServerWorld) {
             ((ServerWorld) world).spawnEntity(zombieBuddy);
         }
-        zombieBuddy.setOwner(owner);
         return zombieBuddy;
     }
 
@@ -46,9 +48,9 @@ public class ZombieBuddyEntity extends ZombieEntity {
         this.targetSelector.add(1, new ActiveTargetGoal<>(this, net.minecraft.entity.mob.HostileEntity.class, true));
 
         this.goalSelector.add(1, new ZombieAttackGoal(this, 1.0D, true));
-        //this.goalSelector.add(1, new FollowOwnerGoal(this, owner, 1.0D, 3.0F, 15.0F)); // ADD FOLLOW
+        this.goalSelector.add(2, new FollowOwnerGoal(this, 1.0D, 5.0F, 30.0F)); // ADD FOLLOW
         this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0D));
+        //this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0D));
     }
 
     @Override
@@ -74,10 +76,13 @@ public class ZombieBuddyEntity extends ZombieEntity {
     }
 
     @Override
+    public boolean isCustomNameVisible() {
+        return true; // Always render the name
+    }
+    @Override
     public boolean shouldRenderName() {
         return true;
     }
-
     @Override
     protected boolean burnsInDaylight(){
         return false;

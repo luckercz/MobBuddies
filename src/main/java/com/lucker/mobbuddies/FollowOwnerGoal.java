@@ -22,11 +22,10 @@ public class FollowOwnerGoal extends Goal {
     private final float minDistance;
     private float oldWaterPathfindingPenalty;
 
-    public FollowOwnerGoal(PathAwareEntity FollowerEntity, LivingEntity owner, double speed, float minDistance, float maxDistance) {
+    public FollowOwnerGoal(PathAwareEntity FollowerEntity, double speed, float minDistance, float maxDistance) {
         MobBuddies.LOGGER.info("Consturcotr");
         this.FollowerEntity = FollowerEntity;
         //MobBuddies.LOGGER.info(owner.toString());
-        this.owner = owner;
         this.speed = speed;
         this.navigation = FollowerEntity.getNavigation();
         this.minDistance = minDistance;
@@ -37,30 +36,23 @@ public class FollowOwnerGoal extends Goal {
         }
     }
 
-    public boolean canStart() {
-        LivingEntity livingEntity = owner;
-        if (livingEntity == null) {
-            return false;
-        } //else if (this.FollowerEntity.cannotFollowOwner()) {
-            //return false;
-        //}
-        else if (this.FollowerEntity.squaredDistanceTo(livingEntity) < (double)(this.minDistance * this.minDistance)) {
-            return false;
-        } else {
-            this.owner = livingEntity;
-            return true;
+    private LivingEntity getOwner() {
+        if (FollowerEntity instanceof ZombieBuddyEntity zombieBuddy) {
+            return zombieBuddy.getOwner();
         }
+        return null;
     }
 
+    @Override
+    public boolean canStart() {
+        LivingEntity owner = getOwner();
+        return owner != null && FollowerEntity.squaredDistanceTo(owner) >= (double) (minDistance * minDistance);
+    }
+
+    @Override
     public boolean shouldContinue() {
-        if (this.navigation.isIdle()) {
-            return false;
-        } //else if (this.FollowerEntity.cannotFollowOwner()) {
-            //return false;
-        //}
-        else {
-            return !(this.FollowerEntity.squaredDistanceTo(this.owner) <= (double)(this.maxDistance * this.maxDistance));
-        }
+        LivingEntity owner = getOwner();
+        return owner != null && !navigation.isIdle() && FollowerEntity.squaredDistanceTo(owner) > (double) (maxDistance * maxDistance);
     }
 
     public void start() {
@@ -77,37 +69,37 @@ public class FollowOwnerGoal extends Goal {
         this.FollowerEntity.setPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
     }
 
+    @Override
     public void tick() {
-        MobBuddies.LOGGER.info("Ticking FollowOwnerGoal");
-        boolean bl = false; //shouldTryTeleportToOwner();
-        if (!bl) {
-            this.FollowerEntity.getLookControl().lookAt(this.owner, 10.0F, (float)this.FollowerEntity.getMaxLookPitchChange());
+        LivingEntity owner = getOwner();
+        if (owner == null) {
+            MobBuddies.LOGGER.warn("FollowOwnerGoal: Owner is null, stopping goal.");
+            return; // Stop execution if the owner is null
         }
 
-        if (--this.updateCountdownTicks <= 0) {
-            this.updateCountdownTicks = this.getTickCount(10);
-            if (bl) {
-                //this.FollowerEntity.tryTeleportToOwner();
-            } else {
-                this.navigation.startMovingTo(this.owner, this.speed);
-            }
+        FollowerEntity.getLookControl().lookAt(owner, 10.0F, FollowerEntity.getMaxLookPitchChange());
 
+        if (FollowerEntity.squaredDistanceTo(owner) >= 144.0) {
+            tryTeleportNear(owner.getBlockPos());
+        } else {
+            navigation.startMovingTo(owner, speed);
         }
     }
-//    public boolean shouldTryTeleportToOwner() {
-//        return owner != null && this.FollowerEntity.squaredDistanceTo(owner) >= 144.0;
-//    }
-//    private void tryTeleportNear(BlockPos pos) {
-//        for(int i = 0; i < 10; ++i) {
-//            int j = this.random.nextBetween(-3, 3);
-//            int k = this.random.nextBetween(-3, 3);
-//            if (Math.abs(j) >= 2 || Math.abs(k) >= 2) {
-//                int l = this.random.nextBetween(-1, 1);
-//                if (this.tryTeleportTo(pos.getX() + j, pos.getY() + l, pos.getZ() + k)) {
-//                    return;
-//                }
-//            }
-//        }
-//
-//    }
+
+    private boolean shouldTryTeleportToOwner() {
+        return owner != null && this.FollowerEntity.squaredDistanceTo(owner) >= 144.0;
+    }
+
+    private void tryTeleportNear(BlockPos pos) {
+        for (int i = 0; i < 10; ++i) {
+            int dx = this.FollowerEntity.getRandom().nextBetween(-3, 3);
+            int dz = this.FollowerEntity.getRandom().nextBetween(-3, 3);
+            int dy = this.FollowerEntity.getRandom().nextBetween(-1, 1);
+            BlockPos targetPos = pos.add(dx, dy, dz);
+            if (this.FollowerEntity.getWorld().isAir(targetPos) && this.FollowerEntity.getWorld().isAir(targetPos.up())) {
+                this.FollowerEntity.refreshPositionAndAngles(targetPos.getX(), targetPos.getY(), targetPos.getZ(), this.FollowerEntity.getYaw(), this.FollowerEntity.getPitch());
+                return;
+            }
+        }
+    }
 }
