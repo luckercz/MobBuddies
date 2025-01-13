@@ -5,9 +5,13 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.entity.mob.PathAwareEntity;
@@ -73,6 +77,35 @@ public class ZombieBuddyEntity extends ZombieEntity {
         if (nbt.containsUuid("OwnerUUID") && getWorld() != null) {
             this.owner = getWorld().getPlayerByUuid(nbt.getUuid("OwnerUUID"));
         }
+    }
+
+    @Override
+    public ActionResult interactMob(PlayerEntity player, Hand hand) {
+        if (player.getWorld().isClient) {
+            return ActionResult.SUCCESS;
+        }
+
+        ItemStack heldItem = player.getStackInHand(hand);
+
+        if (heldItem.isOf(ModItems.MOB_ENERGY_INGOT)) {
+            if (this.getHealth() < this.getMaxHealth()) {
+                this.heal(5.0F);
+                heldItem.decrement(1);
+                player.sendMessage(Text.literal("You healed your buddy!"), true);
+            } else {
+                player.sendMessage(Text.literal("Your buddy is already at full health!"), true);
+            }
+            return ActionResult.CONSUME;
+        }
+        else if (heldItem.isOf(Items.NAME_TAG)) {
+            if (!heldItem.getName().getString().equals(Items.NAME_TAG.getName().getString())) {
+                this.setCustomName(heldItem.getName());
+                player.sendMessage(Text.literal("Your buddy is now named " + heldItem.getName().getString() + "!"), true);
+                return ActionResult.CONSUME;
+            }
+        }
+
+        return super.interactMob(player, hand);
     }
 
     @Override
