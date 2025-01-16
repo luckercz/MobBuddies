@@ -66,8 +66,7 @@ public class ZombieBuddyEntity extends ZombieEntity {
 
     @Override
     public boolean canTarget(EntityType<?> type) {
-        return true;
-        //return type != EntityType.PLAYER; // Only attack entities that are not players.
+        return !MobBuddies.MOB_BUDDY_TYPES.contains(type);
     }
 
     @Override

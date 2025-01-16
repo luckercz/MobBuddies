@@ -31,6 +31,8 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Set;
+
 public class MobBuddies implements ModInitializer {
 	public static final String MOD_ID = "mob-buddies";
 
@@ -51,6 +53,11 @@ public class MobBuddies implements ModInitializer {
 			EntityType.Builder.create(CubeEntity::new, SpawnGroup.CREATURE).dimensions(0.75f, 0.75f).build("cube")
 	);
 
+
+	public static final Set<EntityType<?>> MOB_BUDDY_TYPES = Set.of(
+			ZOMBIE_BUDDY,
+			CUBE
+	);
 
 	public static final RegistryKey<PlacedFeature> MOB_ENERGY_ORE_PLACED_KEY = RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of("mob-buddies", "mob_energy_ore_custom"));
 
