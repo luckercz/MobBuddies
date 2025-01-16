@@ -56,14 +56,14 @@ public class FollowOwnerGoal extends Goal {
     }
 
     public void start() {
-        MobBuddies.LOGGER.info("Start");
+        //MobBuddies.LOGGER.info("Start");
         this.updateCountdownTicks = 0;
         this.oldWaterPathfindingPenalty = this.FollowerEntity.getPathfindingPenalty(PathNodeType.WATER);
         this.FollowerEntity.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
     }
 
     public void stop() {
-        MobBuddies.LOGGER.info("Stop");
+        //MobBuddies.LOGGER.info("Stop");
         this.owner = null;
         this.navigation.stop();
         this.FollowerEntity.setPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);

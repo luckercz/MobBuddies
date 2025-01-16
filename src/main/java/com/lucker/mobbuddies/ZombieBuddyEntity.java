@@ -1,30 +1,34 @@
 package com.lucker.mobbuddies;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.entity.mob.PathAwareEntity;
-
-import java.util.EnumSet;
 
 
 public class ZombieBuddyEntity extends ZombieEntity {
 
     private PlayerEntity owner;
+    private int level = 1;
+    private double customAttackDamage = 5.0; // Default attack damage
+    private double customMaxHealth = 20.0; // Default health
 
     public ZombieBuddyEntity(EntityType<? extends ZombieEntity> entityType, World world) {
         super(entityType, world);
+
     }
 
     public static ZombieBuddyEntity create(World world, PlayerEntity owner, BlockPos pos) {
@@ -33,6 +37,9 @@ public class ZombieBuddyEntity extends ZombieEntity {
         zombieBuddy.refreshPositionAndAngles(pos, 0.0F, 0.0F);
         zombieBuddy.setOwner(owner);
         zombieBuddy.setCustomName(Text.of("zombuebud"));
+
+        //If unlocked
+
         if (world instanceof ServerWorld) {
             ((ServerWorld) world).spawnEntity(zombieBuddy);
         }
@@ -69,6 +76,8 @@ public class ZombieBuddyEntity extends ZombieEntity {
         if (owner != null) {
             nbt.putUuid("OwnerUUID", owner.getUuid());
         }
+
+        nbt.putInt("ZombieBuddyLevel", this.level);
     }
 
     @Override
@@ -76,6 +85,10 @@ public class ZombieBuddyEntity extends ZombieEntity {
         super.readCustomDataFromNbt(nbt);
         if (nbt.containsUuid("OwnerUUID") && getWorld() != null) {
             this.owner = getWorld().getPlayerByUuid(nbt.getUuid("OwnerUUID"));
+        }
+
+        if(nbt.contains("ZombieBuddyLevel")) {
+            this.levelUp(nbt.getInt("ZombieBuddyLevel"));
         }
     }
 
@@ -97,15 +110,63 @@ public class ZombieBuddyEntity extends ZombieEntity {
             }
             return ActionResult.CONSUME;
         }
+        else if (heldItem.isOf(ModItems.MOB_ENERGY_RAW)) {
+            this.levelUp(1);
+            player.sendMessage(Text.literal("Your buddy's level is now " + this.getLevel() + "!"), true);
+            heldItem.decrement(1);
+            return ActionResult.CONSUME;
+
+        }
         else if (heldItem.isOf(Items.NAME_TAG)) {
-            if (!heldItem.getName().getString().equals(Items.NAME_TAG.getName().getString())) {
-                this.setCustomName(heldItem.getName());
-                player.sendMessage(Text.literal("Your buddy is now named " + heldItem.getName().getString() + "!"), true);
-                return ActionResult.CONSUME;
-            }
+            this.setCustomName(heldItem.getName());
+            player.sendMessage(Text.literal("Your buddy is now named " + heldItem.getName().getString() + "!"), true);
+            return ActionResult.CONSUME;
         }
 
         return super.interactMob(player, hand);
+    }
+
+    public void levelUp(int levels){
+        this.setCustomAttackDamage(this.getCustomAttackDamage()+ 1.0 * levels);
+        this.setCustomMaxHealth(this.getCustomMaxHealth() + 5.0f * levels);
+        this.setLevel(this.getLevel() + levels);
+
+        // Play a sound effect
+        this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+    }
+
+    public static DefaultAttributeContainer.Builder createCustomZombieAttributes() {
+        return ZombieBuddyEntity.createZombieAttributes()
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0);
+    }
+
+    public double getCustomAttackDamage(){
+        return customAttackDamage;
+    }
+
+    public void setCustomAttackDamage(double customAttackDamage){
+        this.customAttackDamage = customAttackDamage;
+        this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(customAttackDamage);
+    }
+
+    public double getCustomMaxHealth(){
+        return customMaxHealth;
+    }
+
+    public void setCustomMaxHealth(double customMaxHealth){
+        double currentHealthPercentage = this.getHealth() / this.getMaxHealth();
+        this.customMaxHealth = customMaxHealth;
+        this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(customMaxHealth);
+        this.setHealth((float) (customMaxHealth * currentHealthPercentage)); // Adjust current health proportionally
+    }
+
+    public int getLevel(){
+        return level;
+    }
+
+    public void setLevel(int level){
+        this.level = level;
     }
 
     @Override
