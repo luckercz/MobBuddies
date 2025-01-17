@@ -18,9 +18,12 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.util.UUID;
+
 
 public class ZombieBuddyEntity extends ZombieEntity {
 
+    private UUID pendingOwnerUuid = null;
     private PlayerEntity owner;
     private int level = 1;
     private double customAttackDamage = 5.0; // Default attack damage
@@ -82,13 +85,34 @@ public class ZombieBuddyEntity extends ZombieEntity {
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        if (nbt.containsUuid("OwnerUUID") && getWorld() != null) {
-            this.owner = getWorld().getPlayerByUuid(nbt.getUuid("OwnerUUID"));
+        if (nbt.containsUuid("OwnerUUID")) {
+            UUID ownerUuid = nbt.getUuid("OwnerUUID");
+            this.setPendingOwner(ownerUuid);
         }
 
         if(nbt.contains("ZombieBuddyLevel")) {
             this.levelUp(nbt.getInt("ZombieBuddyLevel"));
         }
+    }
+
+    public void setPendingOwner(UUID uuid) {
+        this.pendingOwnerUuid = uuid;
+    }
+
+    public void resolvePendingOwner() {
+        if (pendingOwnerUuid != null && getWorld() != null) {
+            PlayerEntity resolvedOwner = getWorld().getPlayerByUuid(pendingOwnerUuid);
+            if (resolvedOwner != null) {
+                this.setOwner(resolvedOwner);
+                this.pendingOwnerUuid = null; // Clear pending owner after resolving
+            }
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        resolvePendingOwner(); // Attempt to resolve the owner each tick
     }
 
     @Override
