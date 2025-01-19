@@ -11,10 +11,12 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
@@ -24,8 +26,10 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.PlacedFeature;
 import org.slf4j.Logger;
@@ -121,5 +125,19 @@ public class MobBuddies implements ModInitializer {
 		}
 
 		return 1;
+	}
+
+	public static void removeExistingMobBuddy(PlayerEntity player, World world) {
+		// Iterate through all entities in the world
+		for (Entity entity : ((ServerWorld)world).getEntitiesByType(TypeFilter.instanceOf(Entity.class), EntityPredicates.VALID_ENTITY)) {
+			if (MOB_BUDDY_TYPES.contains(entity.getType())) {
+				if (entity instanceof IMobBuddyEntity MobBuddyEntity) {
+					if (MobBuddyEntity.getOwner() == player) {
+						entity.discard();
+						MobBuddies.LOGGER.info("Removed existing Mob Buddy for player: " + player.getName().getString());
+					}
+				}
+			}
+		}
 	}
 }

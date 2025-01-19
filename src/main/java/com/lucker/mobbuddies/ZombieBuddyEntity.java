@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import java.util.UUID;
 
 
-public class ZombieBuddyEntity extends ZombieEntity {
+public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
 
     private UUID pendingOwnerUuid = null;
     private PlayerEntity owner;
@@ -36,6 +36,10 @@ public class ZombieBuddyEntity extends ZombieEntity {
 
     public static ZombieBuddyEntity create(World world, PlayerEntity owner, BlockPos pos) {
         MobBuddies.LOGGER.info("Createasdad zombie buddy");
+
+        //Handle other summoned Buddies
+        MobBuddies.removeExistingMobBuddy(owner, world);
+
         ZombieBuddyEntity zombieBuddy = new ZombieBuddyEntity(MobBuddies.ZOMBIE_BUDDY, world);
         zombieBuddy.refreshPositionAndAngles(pos, 0.0F, 0.0F);
         zombieBuddy.setOwner(owner);
