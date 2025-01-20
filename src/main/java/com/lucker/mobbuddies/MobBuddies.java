@@ -8,6 +8,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandRegistryAccess;
@@ -86,8 +88,14 @@ public class MobBuddies implements ModInitializer {
 		//Add ore generation
 		BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Feature.UNDERGROUND_ORES, MOB_ENERGY_ORE_PLACED_KEY);
 
-		//Add commands
+		//Add Commands
 		CommandRegistrationCallback.EVENT.register(MobBuddies::registerCommands);
+
+		//Add Events
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+			PlayerEntity player = handler.player;
+			removeExistingMobBuddy(player, player.getWorld());
+		});
 	}
 
 	private static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {

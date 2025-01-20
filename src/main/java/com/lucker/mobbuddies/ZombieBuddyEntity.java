@@ -47,7 +47,7 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
 
         // 1 instance
         PlayerData playerData = StateSaverAndLoader.getPlayerState(owner);
-        zombieBuddy.levelUp(playerData.zombieBuddyLevel);
+        zombieBuddy.levelUp(playerData.zombieBuddyLevel-1);
         zombieBuddy.setHealth(playerData.zombieBuddyHealth);
         zombieBuddy.setCustomName(Text.of(playerData.zombieBuddyName));
 
@@ -132,12 +132,12 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
         }
 
         ItemStack heldItem = player.getStackInHand(hand);
-        MobBuddies.LOGGER.info(heldItem.getName().toString());
+        //MobBuddies.LOGGER.info(heldItem.getName().toString());
         if (heldItem.isOf(ModItems.MOB_ENERGY_INGOT)) {
             if (this.getHealth() < this.getMaxHealth()) {
                 this.heal(5.0F);
                 heldItem.decrement(1);
-                player.sendMessage(Text.literal("You healed your buddy!"), true);
+                player.sendMessage(Text.literal("You healed your buddy: " + this.getHealth() + "/" + this.getCustomMaxHealth()), true);
             } else {
                 player.sendMessage(Text.literal("Your buddy is already at full health!"), true);
             }

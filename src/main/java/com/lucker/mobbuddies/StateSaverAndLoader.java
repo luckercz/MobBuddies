@@ -42,7 +42,7 @@ public class StateSaverAndLoader extends PersistentState {
 
             playerData.zombieBuddyLevel = playersNbt.getCompound(key).getInt("zombieBuddyLevel");
             playerData.zombieBuddyHealth = playersNbt.getCompound(key).getFloat("zombieBuddyHealth");
-            playerData.zombieBuddyName = playersNbt.getString(key);
+            playerData.zombieBuddyName = playersNbt.getCompound(key).getString("zombieBuddyName");
 
             UUID uuid = UUID.fromString(key);
             state.players.put(uuid, playerData);
