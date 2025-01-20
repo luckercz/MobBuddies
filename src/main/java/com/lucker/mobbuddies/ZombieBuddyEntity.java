@@ -17,6 +17,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -43,7 +44,12 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
         ZombieBuddyEntity zombieBuddy = new ZombieBuddyEntity(MobBuddies.ZOMBIE_BUDDY, world);
         zombieBuddy.refreshPositionAndAngles(pos, 0.0F, 0.0F);
         zombieBuddy.setOwner(owner);
-        zombieBuddy.setCustomName(Text.of("zombuebud"));
+
+        // 1 instance
+        PlayerData playerData = StateSaverAndLoader.getPlayerState(owner);
+        zombieBuddy.levelUp(playerData.zombieBuddyLevel);
+        zombieBuddy.setHealth(playerData.zombieBuddyHealth);
+        zombieBuddy.setCustomName(Text.of(playerData.zombieBuddyName));
 
         //If unlocked
 
@@ -126,7 +132,7 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
         }
 
         ItemStack heldItem = player.getStackInHand(hand);
-
+        MobBuddies.LOGGER.info(heldItem.getName().toString());
         if (heldItem.isOf(ModItems.MOB_ENERGY_INGOT)) {
             if (this.getHealth() < this.getMaxHealth()) {
                 this.heal(5.0F);
@@ -141,13 +147,15 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
             this.levelUp(1);
             player.sendMessage(Text.literal("Your buddy's level is now " + this.getLevel() + "!"), true);
             heldItem.decrement(1);
+            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+            playerData.zombieBuddyLevel += 1;
+            this.setCustomName(Text.of(playerData.zombieBuddyName));
+
+            // Play a sound effect
+            this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
             return ActionResult.CONSUME;
 
-        }
-        else if (heldItem.isOf(Items.NAME_TAG)) {
-            this.setCustomName(heldItem.getName());
-            player.sendMessage(Text.literal("Your buddy is now named " + heldItem.getName().getString() + "!"), true);
-            return ActionResult.CONSUME;
         }
 
         return super.interactMob(player, hand);
@@ -157,9 +165,6 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
         this.setCustomAttackDamage(this.getCustomAttackDamage()+ 1.0 * levels);
         this.setCustomMaxHealth(this.getCustomMaxHealth() + 5.0f * levels);
         this.setLevel(this.getLevel() + levels);
-
-        // Play a sound effect
-        this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
     }
 
     public static DefaultAttributeContainer.Builder createCustomZombieAttributes() {
@@ -194,6 +199,13 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
 
     public void setLevel(int level){
         this.level = level;
+    }
+
+    @Override
+    public void setCustomName(@Nullable Text name) {
+        PlayerData playerData = StateSaverAndLoader.getPlayerState(this.getOwner());
+        playerData.zombieBuddyName = name.getString();
+        super.setCustomName(Text.of("[§alvl." + this.getLevel() + "§r] " + name.getString()));
     }
 
     @Override
