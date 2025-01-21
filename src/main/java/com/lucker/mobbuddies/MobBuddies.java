@@ -8,6 +8,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
@@ -96,6 +97,16 @@ public class MobBuddies implements ModInitializer {
 			PlayerEntity player = handler.player;
 			removeExistingMobBuddy(player, player.getWorld());
 		});
+
+		ServerLivingEntityEvents.AFTER_DEATH.register((handler, server) -> {
+			if(MOB_BUDDY_TYPES.contains(handler.getType())){
+				if(handler.getType() == ZOMBIE_BUDDY){
+					PlayerData playerData = StateSaverAndLoader.getPlayerState(((ZombieBuddyEntity) handler).getOwner());
+					playerData.zombieBuddyHealth = 5.0f;
+				}
+				MobBuddies.LOGGER.info("ZombieBuddy has been destroyed!");
+			}
+		});
 	}
 
 	private static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, CommandManager.RegistrationEnvironment environment) {
@@ -141,6 +152,10 @@ public class MobBuddies implements ModInitializer {
 			if (MOB_BUDDY_TYPES.contains(entity.getType())) {
 				if (entity instanceof IMobBuddyEntity MobBuddyEntity) {
 					if (MobBuddyEntity.getOwner() == player) {
+						if(entity instanceof ZombieBuddyEntity) {
+							PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+							playerData.zombieBuddyHealth = ((ZombieBuddyEntity) entity).getHealth();
+						}
 						entity.discard();
 						MobBuddies.LOGGER.info("Removed existing Mob Buddy for player: " + player.getName().getString());
 					}
