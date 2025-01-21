@@ -144,18 +144,25 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
             return ActionResult.CONSUME;
         }
         else if (heldItem.isOf(ModItems.MOB_ENERGY_RAW)) {
-            this.levelUp(1);
-            player.sendMessage(Text.literal("Your buddy's level is now " + this.getLevel() + "!"), true);
-            heldItem.decrement(1);
-            PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-            playerData.zombieBuddyLevel += 1;
-            this.setCustomName(Text.of(playerData.zombieBuddyName));
+            int held = heldItem.getCount();
+            int price = this.getLevel();
 
-            // Play a sound effect
-            this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            if(held >= price){
+                this.levelUp(1);
+                player.sendMessage(Text.literal("Your buddy's level is now " + this.getLevel() + "!"), true);
+                heldItem.decrement(price);
+                PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+                playerData.zombieBuddyLevel += 1;
+                this.setCustomName(Text.of(playerData.zombieBuddyName));
+
+                // Play a sound effect
+                this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            }
+            else{
+                player.sendMessage(Text.literal("The price of an upgrade is: " + price + "!"), true);
+            }
 
             return ActionResult.CONSUME;
-
         }
 
         return super.interactMob(player, hand);
