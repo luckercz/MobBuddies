@@ -1,7 +1,8 @@
 package com.lucker.mobbuddies;
 
+import java.util.HashMap;
+
 public class PlayerData {
-    public int zombieBuddyLevel = 1;
-    public float zombieBuddyHealth = 20.0f;
-    public String zombieBuddyName = "zombieBuddy";
+
+    public HashMap<String, BuddyData> buddies = new HashMap<>();
 }

@@ -8,6 +8,7 @@ import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -22,9 +23,11 @@ public class StateSaverAndLoader extends PersistentState {
         players.forEach((uuid, playerData) -> {
             NbtCompound playerNbt = new NbtCompound();
 
-            playerNbt.putInt("zombieBuddyLevel", playerData.zombieBuddyLevel);
-            playerNbt.putFloat("zombieBuddyHealth", playerData.zombieBuddyHealth);
-            playerNbt.putString("zombieBuddyName", playerData.zombieBuddyName);
+            playerData.buddies.forEach((k, v) -> {
+                playerNbt.putInt(k+"Level", v.level);
+                playerNbt.putFloat(k+"Health", v.health);
+                playerNbt.putString(k+"Name", v.name);
+            });
 
             playersNbt.put(uuid.toString(), playerNbt);
         });
@@ -40,9 +43,21 @@ public class StateSaverAndLoader extends PersistentState {
         playersNbt.getKeys().forEach(key -> {
             PlayerData playerData = new PlayerData();
 
-            playerData.zombieBuddyLevel = playersNbt.getCompound(key).getInt("zombieBuddyLevel");
-            playerData.zombieBuddyHealth = playersNbt.getCompound(key).getFloat("zombieBuddyHealth");
-            playerData.zombieBuddyName = playersNbt.getCompound(key).getString("zombieBuddyName");
+            if (!playerData.buddies.containsKey("zombie")) {
+                playerData.buddies.put("zombie", new BuddyData());
+            }
+
+            playersNbt.getCompound(key).getKeys().forEach((k) -> {
+                if(k.contains("Level")) {
+                    playerData.buddies.get(k.split("Level")[0]).level = playersNbt.getCompound(key).getInt(k);
+                }
+                else if(k.contains("Health")) {
+                    playerData.buddies.get(k.split("Health")[0]).health = playersNbt.getCompound(key).getFloat(k);
+                }
+                else if(k.contains("Name")) {
+                    playerData.buddies.get(k.split("Name")[0]).name = playersNbt.getCompound(key).getString(k);
+                }
+            });
 
             UUID uuid = UUID.fromString(key);
             state.players.put(uuid, playerData);
@@ -79,9 +94,16 @@ public class StateSaverAndLoader extends PersistentState {
     public static PlayerData getPlayerState(LivingEntity player) {
         StateSaverAndLoader serverState = getServerState(player.getWorld().getServer());
 
-        // Either get the player by the uuid, or we don't have data for him yet, make a new player state
-        PlayerData playerState = serverState.players.computeIfAbsent(player.getUuid(), uuid -> new PlayerData());
+        PlayerData playerState = serverState.players.computeIfAbsent(player.getUuid(), uuid -> {
+            PlayerData newPlayerData = new PlayerData();
+            newPlayerData.buddies.put("zombie", new BuddyData()); // Add default BuddyData
+            return newPlayerData;
+        });
+
+        // Ensure default entries exist in buddies
+        playerState.buddies.computeIfAbsent("zombie", k -> new BuddyData());
 
         return playerState;
     }
+
 }

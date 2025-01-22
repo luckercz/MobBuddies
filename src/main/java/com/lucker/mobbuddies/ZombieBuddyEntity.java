@@ -32,24 +32,18 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
 
     public ZombieBuddyEntity(EntityType<? extends ZombieEntity> entityType, World world) {
         super(entityType, world);
-
     }
 
     public static ZombieBuddyEntity create(World world, PlayerEntity owner, BlockPos pos) {
         MobBuddies.LOGGER.info("Createasdad zombie buddy");
 
-        //Handle other summoned Buddies
-        MobBuddies.removeExistingMobBuddy(owner, world);
-
-        ZombieBuddyEntity zombieBuddy = new ZombieBuddyEntity(MobBuddies.ZOMBIE_BUDDY, world);
-        zombieBuddy.refreshPositionAndAngles(pos, 0.0F, 0.0F);
-        zombieBuddy.setOwner(owner);
+        ZombieBuddyEntity zombieBuddy = (ZombieBuddyEntity) MobBuddyHelper.Create(world, new ZombieBuddyEntity(MobBuddies.ZOMBIE_BUDDY, world), owner, pos);
 
         // 1 instance
         PlayerData playerData = StateSaverAndLoader.getPlayerState(owner);
-        zombieBuddy.levelUp(playerData.zombieBuddyLevel-1);
-        zombieBuddy.setHealth(playerData.zombieBuddyHealth);
-        zombieBuddy.setCustomName(Text.of(playerData.zombieBuddyName));
+        BuddyData buddyData = playerData.buddies.computeIfAbsent("zombie", k -> new BuddyData());
+
+        MobBuddyHelper.Initialize(zombieBuddy, buddyData.level, buddyData.health, buddyData.name);
 
         //If unlocked
 
@@ -130,42 +124,14 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
         if (player.getWorld().isClient) {
             return ActionResult.SUCCESS;
         }
-
-        ItemStack heldItem = player.getStackInHand(hand);
-        //MobBuddies.LOGGER.info(heldItem.getName().toString());
-        if (heldItem.isOf(ModItems.MOB_ENERGY_INGOT)) {
-            if (this.getHealth() < this.getMaxHealth()) {
-                this.heal(5.0F);
-                heldItem.decrement(1);
-                player.sendMessage(Text.literal("You healed your buddy: " + this.getHealth() + "/" + this.getCustomMaxHealth()), true);
-            } else {
-                player.sendMessage(Text.literal("Your buddy is already at full health!"), true);
-            }
-            return ActionResult.CONSUME;
+        PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.MOB_ENERGY_INGOT, ModItems.MOB_ENERGY_RAW);
+        if(actionResult == null){
+            return super.interactMob(player, hand);
         }
-        else if (heldItem.isOf(ModItems.MOB_ENERGY_RAW)) {
-            int held = heldItem.getCount();
-            int price = this.getLevel();
-
-            if(held >= price){
-                this.levelUp(1);
-                player.sendMessage(Text.literal("Your buddy's level is now " + this.getLevel() + "!"), true);
-                heldItem.decrement(price);
-                PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-                playerData.zombieBuddyLevel += 1;
-                this.setCustomName(Text.of(playerData.zombieBuddyName));
-
-                // Play a sound effect
-                this.getWorld().playSound(null, this.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            }
-            else{
-                player.sendMessage(Text.literal("The price of an upgrade is: " + price + "!"), true);
-            }
-
-            return ActionResult.CONSUME;
+        else{
+            return actionResult;
         }
-
-        return super.interactMob(player, hand);
     }
 
     public void levelUp(int levels){
@@ -211,8 +177,8 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
     @Override
     public void setCustomName(@Nullable Text name) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(this.getOwner());
-        playerData.zombieBuddyName = name.getString();
-        super.setCustomName(Text.of("[§alvl." + this.getLevel() + "§r] " + name.getString()));
+        playerData.buddies.get("zombie").name = name.getString();
+        super.setCustomName(MobBuddyHelper.CustomName(name.getString(), this.getLevel()));
     }
 
     @Override

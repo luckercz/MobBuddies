@@ -102,7 +102,7 @@ public class MobBuddies implements ModInitializer {
 			if(MOB_BUDDY_TYPES.contains(handler.getType())){
 				if(handler.getType() == ZOMBIE_BUDDY){
 					PlayerData playerData = StateSaverAndLoader.getPlayerState(((ZombieBuddyEntity) handler).getOwner());
-					playerData.zombieBuddyHealth = 5.0f;
+					playerData.buddies.get("zombie").health = 5.0f;
 				}
 				MobBuddies.LOGGER.info("ZombieBuddy has been destroyed!");
 			}
@@ -154,7 +154,7 @@ public class MobBuddies implements ModInitializer {
 					if (MobBuddyEntity.getOwner() == player) {
 						if(entity instanceof ZombieBuddyEntity) {
 							PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-							playerData.zombieBuddyHealth = ((ZombieBuddyEntity) entity).getHealth();
+							playerData.buddies.get("zombie").health = ((ZombieBuddyEntity) entity).getHealth();
 						}
 						entity.discard();
 						MobBuddies.LOGGER.info("Removed existing Mob Buddy for player: " + player.getName().getString());
