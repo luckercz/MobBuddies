@@ -14,10 +14,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandRegistryAccess;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.Registries;
@@ -38,6 +35,8 @@ import net.minecraft.world.gen.feature.PlacedFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class MobBuddies implements ModInitializer {
@@ -64,6 +63,10 @@ public class MobBuddies implements ModInitializer {
 	public static final Set<EntityType<?>> MOB_BUDDY_TYPES = Set.of(
 			ZOMBIE_BUDDY,
 			CUBE
+	);
+
+	public static final Map<EntityType, String> NBT_Names = Map.of(
+			ZOMBIE_BUDDY, "zombie"
 	);
 
 	public static final RegistryKey<PlacedFeature> MOB_ENERGY_ORE_PLACED_KEY = RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of("mob-buddies", "mob_energy_ore_custom"));
@@ -100,10 +103,8 @@ public class MobBuddies implements ModInitializer {
 
 		ServerLivingEntityEvents.AFTER_DEATH.register((handler, server) -> {
 			if(MOB_BUDDY_TYPES.contains(handler.getType())){
-				if(handler.getType() == ZOMBIE_BUDDY){
-					PlayerData playerData = StateSaverAndLoader.getPlayerState(((ZombieBuddyEntity) handler).getOwner());
-					playerData.buddies.get("zombie").health = 5.0f;
-				}
+				PlayerData playerData = StateSaverAndLoader.getPlayerState(((IMobBuddyEntity) handler).getOwner());
+				playerData.buddies.get(NBT_Names.get(handler.getType())).health = 5.0f;
 				MobBuddies.LOGGER.info("ZombieBuddy has been destroyed!");
 			}
 		});
@@ -152,10 +153,8 @@ public class MobBuddies implements ModInitializer {
 			if (MOB_BUDDY_TYPES.contains(entity.getType())) {
 				if (entity instanceof IMobBuddyEntity MobBuddyEntity) {
 					if (MobBuddyEntity.getOwner() == player) {
-						if(entity instanceof ZombieBuddyEntity) {
-							PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-							playerData.buddies.get("zombie").health = ((ZombieBuddyEntity) entity).getHealth();
-						}
+						PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
+						playerData.buddies.get(NBT_Names.get(entity.getType())).health = ((LivingEntity) entity).getHealth();
 						entity.discard();
 						MobBuddies.LOGGER.info("Removed existing Mob Buddy for player: " + player.getName().getString());
 					}
