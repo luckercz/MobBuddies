@@ -7,6 +7,8 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.SkeletonEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.entity.projectile.ProjectileUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -26,7 +28,7 @@ public class SkeletonBuddyEntity extends SkeletonEntity implements IMobBuddyEnti
     private UUID pendingOwnerUuid = null;
     private PlayerEntity owner;
     private int level = 1;
-    private double customAttackDamage = 5.0; // Default attack damage
+    private float customArrowDamageModifier = 5.0f; // Default attack damage
     private double customMaxHealth = 20.0; // Default health
 
     public SkeletonBuddyEntity(EntityType<? extends SkeletonEntity> entityType, World world) {
@@ -43,8 +45,9 @@ public class SkeletonBuddyEntity extends SkeletonEntity implements IMobBuddyEnti
         BuddyData buddyData = playerData.buddies.computeIfAbsent("skeleton", k -> new BuddyData());
 
         MobBuddyHelper.Initialize(skeletonBuddy, buddyData.level, buddyData.health, buddyData.name);
-        skeletonBuddy.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.STONE_BUTTON));
-        skeletonBuddy.setEquipmentDropChance(EquipmentSlot.HEAD, 0.0f);
+
+//        skeletonBuddy.equipStack(EquipmentSlot.HEAD, new ItemStack(Items.STONE_BUTTON));
+//        skeletonBuddy.setEquipmentDropChance(EquipmentSlot.HEAD, 0.0f);
 
         skeletonBuddy.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.BOW));
 
@@ -68,10 +71,15 @@ public class SkeletonBuddyEntity extends SkeletonEntity implements IMobBuddyEnti
     protected void initGoals() {
         this.targetSelector.add(1, new ActiveTargetGoal<>(this, net.minecraft.entity.mob.HostileEntity.class, true));
 
-        this.goalSelector.add(2, new BowAttackGoal<>(this, 1.0D, 20, 15.0f));
-        this.goalSelector.add(1, new FollowOwnerGoal(this, 1.0D, 5.0F, 30.0F)); // ADD FOLLOW
+        this.goalSelector.add(1, new BowAttackGoal<>(this, 1.0D, 20, 15.0f));
+        this.goalSelector.add(2, new FollowOwnerGoal(this, 1.0D, 5.0F, 30.0F)); // ADD FOLLOW
         this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         //this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0D));
+    }
+
+    @Override
+    protected PersistentProjectileEntity createArrowProjectile(ItemStack arrow, float damageModifier, @Nullable ItemStack shotFrom) {
+        return ProjectileUtil.createArrowProjectile(this, arrow, damageModifier + this.getCustomArrowDamageModifier(), shotFrom);
     }
 
     @Override
@@ -138,24 +146,23 @@ public class SkeletonBuddyEntity extends SkeletonEntity implements IMobBuddyEnti
     }
 
     public void levelUp(int levels){
-        this.setCustomAttackDamage(this.getCustomAttackDamage()+ 1.0 * levels);
-        this.setCustomMaxHealth(this.getCustomMaxHealth() + 5.0f * levels);
+        this.setCustomArrowDamageModifier(this.getCustomArrowDamageModifier()+ 1.0f * levels);
+        this.setCustomMaxHealth(this.getCustomMaxHealth() + 2.0f * levels);
         this.setLevel(this.getLevel() + levels);
     }
 
     public static DefaultAttributeContainer.Builder createCustomSkeletonAttributes() {
         return SkeletonBuddyEntity.createAbstractSkeletonAttributes()
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 100.0)
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0);
     }
 
-    public double getCustomAttackDamage(){
-        return customAttackDamage;
+    public float getCustomArrowDamageModifier(){
+        return customArrowDamageModifier;
     }
 
-    public void setCustomAttackDamage(double customAttackDamage){
-        this.customAttackDamage = customAttackDamage;
-        this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(customAttackDamage);
+    public void setCustomArrowDamageModifier(float customArrowDamageModifier){
+        this.customArrowDamageModifier = customArrowDamageModifier;
     }
 
     public double getCustomMaxHealth(){
@@ -192,8 +199,9 @@ public class SkeletonBuddyEntity extends SkeletonEntity implements IMobBuddyEnti
     public boolean shouldRenderName() {
         return true;
     }
-//    @Override
-//    protected boolean burnsInDaylight(){
-//        return false;
-//    }
+
+    @Override
+    protected boolean isAffectedByDaylight() {
+        return false;
+    }
 }
