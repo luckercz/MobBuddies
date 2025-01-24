@@ -91,7 +91,7 @@ public class FollowOwnerGoal extends Goal {
     }
 
     private boolean shouldTryTeleportToOwner() {
-        return owner != null && this.FollowerEntity.squaredDistanceTo(owner) >= 144.0;
+        return owner != null && this.FollowerEntity.squaredDistanceTo(owner) >= 196.0;
     }
 
     private void tryTeleportNear(BlockPos pos) {
