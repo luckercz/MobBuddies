@@ -17,28 +17,27 @@ public class FollowOwnerGoal extends Goal {
     private LivingEntity owner;
     private final double speed;
     private final EntityNavigation navigation;
-    private int updateCountdownTicks;
     private final float maxDistance;
     private final float minDistance;
     private float oldWaterPathfindingPenalty;
 
     public FollowOwnerGoal(PathAwareEntity FollowerEntity, double speed, float minDistance, float maxDistance) {
-        MobBuddies.LOGGER.info("Consturcotr");
+        MobBuddies.LOGGER.info("FollowOwnerGoal constructor");
         this.FollowerEntity = FollowerEntity;
         //MobBuddies.LOGGER.info(owner.toString());
         this.speed = speed;
         this.navigation = FollowerEntity.getNavigation();
         this.minDistance = minDistance;
         this.maxDistance = maxDistance;
-        this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+        this.setControls(EnumSet.of(Control.MOVE, Control.LOOK, Control.JUMP));
         if (!(FollowerEntity.getNavigation() instanceof MobNavigation) && !(FollowerEntity.getNavigation() instanceof BirdNavigation)) {
             throw new IllegalArgumentException("Unsupported mob type for FollowOwnerGoal");
         }
     }
 
     private LivingEntity getOwner() {
-        if (FollowerEntity instanceof ZombieBuddyEntity zombieBuddy) {
-            return zombieBuddy.getOwner();
+        if (FollowerEntity instanceof IMobBuddyEntity buddy) {
+            return buddy.getOwner();
         }
         return null;
     }
@@ -57,9 +56,11 @@ public class FollowOwnerGoal extends Goal {
 
     public void start() {
         //MobBuddies.LOGGER.info("Start");
-        this.updateCountdownTicks = 0;
         this.oldWaterPathfindingPenalty = this.FollowerEntity.getPathfindingPenalty(PathNodeType.WATER);
         this.FollowerEntity.setPathfindingPenalty(PathNodeType.WATER, 0.0F);
+        this.FollowerEntity.setPathfindingPenalty(PathNodeType.OPEN, 0.0f);
+        this.FollowerEntity.setPathfindingPenalty(PathNodeType.DANGER_OTHER, 0.0F); // Ignore "dangerous" paths
+        this.FollowerEntity.setPathfindingPenalty(PathNodeType.DAMAGE_OTHER, 0.0F); // Ignore damage areas
     }
 
     public void stop() {
@@ -67,6 +68,9 @@ public class FollowOwnerGoal extends Goal {
         this.owner = null;
         this.navigation.stop();
         this.FollowerEntity.setPathfindingPenalty(PathNodeType.WATER, this.oldWaterPathfindingPenalty);
+        this.FollowerEntity.setPathfindingPenalty(PathNodeType.OPEN, 0.0f);
+        this.FollowerEntity.setPathfindingPenalty(PathNodeType.DANGER_OTHER, 0.0F); // Ignore "dangerous" paths
+        this.FollowerEntity.setPathfindingPenalty(PathNodeType.DAMAGE_OTHER, 0.0F); // Ignore damage areas
     }
 
     @Override
