@@ -53,8 +53,8 @@ public class MobBuddyHelper {
                 player.sendMessage(Text.literal("Your buddy's level is now " + mobBuddy.getLevel() + "!"), true);
                 heldItem.decrement(price);
                 PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-                playerData.buddies.get("zombie").level += 1;
-                mobBuddy.setCustomName(Text.of(playerData.buddies.get("zombie").name));
+                playerData.buddies.get(MobBuddies.NBT_Names.get(((LivingEntity) mobBuddy).getType())).level += 1;
+                mobBuddy.setCustomName(Text.of(playerData.buddies.get(MobBuddies.NBT_Names.get(((LivingEntity) mobBuddy).getType())).name));
 
                 // Play a sound effect
                 ((LivingEntity) mobBuddy).getWorld().playSound(null, ((LivingEntity) mobBuddy).getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.0F);
