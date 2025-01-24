@@ -46,6 +46,9 @@ public class StateSaverAndLoader extends PersistentState {
             if (!playerData.buddies.containsKey("zombie")) {
                 playerData.buddies.put("zombie", new BuddyData());
             }
+            if (!playerData.buddies.containsKey("skeleton")) {
+                playerData.buddies.put("skeleton", new BuddyData());
+            }
 
             playersNbt.getCompound(key).getKeys().forEach((k) -> {
                 if(k.contains("Level")) {
@@ -97,11 +100,13 @@ public class StateSaverAndLoader extends PersistentState {
         PlayerData playerState = serverState.players.computeIfAbsent(player.getUuid(), uuid -> {
             PlayerData newPlayerData = new PlayerData();
             newPlayerData.buddies.put("zombie", new BuddyData()); // Add default BuddyData
+            newPlayerData.buddies.put("skeleton", new BuddyData());
             return newPlayerData;
         });
 
         // Ensure default entries exist in buddies
         playerState.buddies.computeIfAbsent("zombie", k -> new BuddyData());
+        playerState.buddies.computeIfAbsent("skeleton", k -> new BuddyData());
 
         return playerState;
     }
