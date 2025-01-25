@@ -132,7 +132,7 @@ public class SpiderBuddyEntity extends SpiderEntity implements IMobBuddyEntity {
 
     public void levelUp(int levels) {
         this.setCustomAttackDamage(this.getCustomAttackDamage() + 1.0 * levels); // Increase attack damage
-        this.setCustomSpeed(this.getCustomSpeed() + 0.01 * levels); // Increase speed
+        this.setCustomSpeed(this.getCustomSpeed() + 0.015 * levels); // Increase speed
         this.setCustomMaxHealth(this.getCustomMaxHealth() + 1.0 * levels); // Increase max health by 1 per level
         this.setLevel(this.getLevel() + levels);
     }

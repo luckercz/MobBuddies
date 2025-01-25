@@ -49,6 +49,9 @@ public class StateSaverAndLoader extends PersistentState {
             if (!playerData.buddies.containsKey("skeleton")) {
                 playerData.buddies.put("skeleton", new BuddyData());
             }
+            if (!playerData.buddies.containsKey("creeper")) {
+                playerData.buddies.put("creeper", new BuddyData());
+            }
             if (!playerData.buddies.containsKey("spider")) {
                 playerData.buddies.put("spider", new BuddyData());
             }
@@ -104,6 +107,7 @@ public class StateSaverAndLoader extends PersistentState {
             PlayerData newPlayerData = new PlayerData();
             newPlayerData.buddies.put("zombie", new BuddyData()); // Add default BuddyData
             newPlayerData.buddies.put("skeleton", new BuddyData());
+            newPlayerData.buddies.put("creeper", new BuddyData());
             newPlayerData.buddies.put("spider", new BuddyData());
             return newPlayerData;
         });
@@ -111,6 +115,7 @@ public class StateSaverAndLoader extends PersistentState {
         // Ensure default entries exist in buddies
         playerState.buddies.computeIfAbsent("zombie", k -> new BuddyData());
         playerState.buddies.computeIfAbsent("skeleton", k -> new BuddyData());
+        playerState.buddies.computeIfAbsent("creeper", k -> new BuddyData());
         playerState.buddies.computeIfAbsent("spider", k -> new BuddyData());
 
         return playerState;

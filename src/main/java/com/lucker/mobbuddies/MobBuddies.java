@@ -59,11 +59,18 @@ public class MobBuddies implements ModInitializer {
 			EntityType.Builder.create(SkeletonBuddyEntity::new, SpawnGroup.CREATURE).dimensions(0.6F, 1.95F).build("skeleton-buddy")
 	);
 
+	public static final EntityType<CreeperBuddyEntity> CREEPER_BUDDY = Registry.register(
+			Registries.ENTITY_TYPE,
+			Identifier.of("mob-buddies", "creeper-buddy"),
+			EntityType.Builder.create(CreeperBuddyEntity::new, SpawnGroup.CREATURE).dimensions(0.6F, 1.7F).build("creeper-buddy")
+	);
+
 	public static final EntityType<SpiderBuddyEntity> SPIDER_BUDDY = Registry.register(
 			Registries.ENTITY_TYPE,
 			Identifier.of("mob-buddie", "spider-buddy"),
 			EntityType.Builder.create(SpiderBuddyEntity::new, SpawnGroup.CREATURE).dimensions(1.4f, 0.9f).build("spider-buddy")
 	);
+
 
 	public static final EntityType<CubeEntity> CUBE = Registry.register(
 			Registries.ENTITY_TYPE,
@@ -75,6 +82,7 @@ public class MobBuddies implements ModInitializer {
 	public static final Set<EntityType<?>> MOB_BUDDY_TYPES = Set.of(
 			ZOMBIE_BUDDY,
 			SKELETON_BUDDY,
+			CREEPER_BUDDY,
 			SPIDER_BUDDY,
 			CUBE
 	);
@@ -82,6 +90,7 @@ public class MobBuddies implements ModInitializer {
 	public static final Map<EntityType, String> NBT_Names = Map.of(
 			ZOMBIE_BUDDY, "zombie",
 			SKELETON_BUDDY, "skeleton",
+			CREEPER_BUDDY, "creeper",
 			SPIDER_BUDDY, "spider"
 	);
 
@@ -98,7 +107,9 @@ public class MobBuddies implements ModInitializer {
 		//Initialize Buddies
 		FabricDefaultAttributeRegistry.register(ZOMBIE_BUDDY, ZombieBuddyEntity.createCustomZombieAttributes());
 		FabricDefaultAttributeRegistry.register(SKELETON_BUDDY, SkeletonBuddyEntity.createCustomSkeletonAttributes());
+		FabricDefaultAttributeRegistry.register(CREEPER_BUDDY, CreeperBuddyEntity.createCustomCreeperAttributes());
 		FabricDefaultAttributeRegistry.register(SPIDER_BUDDY, SpiderBuddyEntity.createCustomSpiderAttributes());
+
 		FabricDefaultAttributeRegistry.register(CUBE, CubeEntity.createMobAttributes());
 
 		//Initialize Items
@@ -134,6 +145,7 @@ public class MobBuddies implements ModInitializer {
 						.suggests((context, builder) -> {
 							builder.suggest("zombie-buddy");
 							builder.suggest("skeleton-buddy");
+							builder.suggest("creeper-buddy");
 							builder.suggest("spider-buddy");
 							builder.suggest("notin");
 							return builder.buildFuture();
@@ -160,6 +172,10 @@ public class MobBuddies implements ModInitializer {
 		else if(choice.equals("skeleton-buddy")) {
 			SkeletonBuddyEntity.create(world, player, blockPos);
 			source.sendFeedback(() -> Text.literal("Summoned a skeleton-buddy!"), true);
+		}
+		else if(choice.equals("creeper-buddy")) {
+			CreeperBuddyEntity.create(world, player, blockPos);
+			source.sendFeedback(() -> Text.literal("Summoned a creeper-buddy!"), true);
 		}
 		else if(choice.equals("spider-buddy")) {
 			SpiderBuddyEntity.create(world, player, blockPos);

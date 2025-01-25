@@ -3,7 +3,8 @@
 	"package": "com.lucker.mobbuddies.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin"
+		"ExampleMixin",
+		"ExplosionBehaviorMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
