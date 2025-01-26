@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ExplosionBehaviorMixin {
     @Inject(at = @At("HEAD"), method = "shouldDamage", cancellable = true)
     private void shouldDamage(Explosion explosion, Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        if(explosion.getEntity().getType() == MobBuddies.CREEPER_BUDDY){
+        if(explosion.getEntity().getType() == MobBuddies.CREEPER_BUDDY || explosion.getEntity().getType() == MobBuddies.GHAST_BUDDY){
             if(MobBuddies.MOB_BUDDY_TYPES.contains(entity.getType())){
                 cir.setReturnValue(false);
                 return;

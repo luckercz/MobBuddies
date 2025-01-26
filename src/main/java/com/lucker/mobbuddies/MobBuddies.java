@@ -83,6 +83,12 @@ public class MobBuddies implements ModInitializer {
 			EntityType.Builder.create(PiglinBuddyEntity::new, SpawnGroup.CREATURE).dimensions(0.6F, 1.95F).build("piglin-buddy")
 	);
 
+	public static final EntityType<GhastBuddyEntity> GHAST_BUDDY = Registry.register(
+			Registries.ENTITY_TYPE,
+			Identifier.of("mob-buddies", "ghast-buddy"),
+			EntityType.Builder.create(GhastBuddyEntity::new, SpawnGroup.CREATURE).dimensions(4.0F, 4.0F).build("ghast-buddy")
+	);
+
 
 	public static final EntityType<CubeEntity> CUBE = Registry.register(
 			Registries.ENTITY_TYPE,
@@ -98,6 +104,7 @@ public class MobBuddies implements ModInitializer {
 			SPIDER_BUDDY,
 			ENDERMAN_BUDDY,
 			PIGLIN_BUDDY,
+			GHAST_BUDDY,
 			CUBE
 	);
 
@@ -107,7 +114,8 @@ public class MobBuddies implements ModInitializer {
 			CREEPER_BUDDY, "creeper",
 			SPIDER_BUDDY, "spider",
 			ENDERMAN_BUDDY, "enderman",
-			PIGLIN_BUDDY, "piglin"
+			PIGLIN_BUDDY, "piglin",
+			GHAST_BUDDY, "ghast"
 	);
 
 	public static final RegistryKey<PlacedFeature> MOB_ENERGY_ORE_PLACED_KEY = RegistryKey.of(RegistryKeys.PLACED_FEATURE, Identifier.of("mob-buddies", "mob_energy_ore_custom"));
@@ -127,6 +135,7 @@ public class MobBuddies implements ModInitializer {
 		FabricDefaultAttributeRegistry.register(SPIDER_BUDDY, SpiderBuddyEntity.createCustomSpiderAttributes());
 		FabricDefaultAttributeRegistry.register(ENDERMAN_BUDDY, EndermanBuddyEntity.createCustomEndermanAttributes());
 		FabricDefaultAttributeRegistry.register(PIGLIN_BUDDY, PiglinBuddyEntity.createCustomPiglinAttributes());
+		FabricDefaultAttributeRegistry.register(GHAST_BUDDY, GhastBuddyEntity.createCustomGhastAttributes());
 
 		FabricDefaultAttributeRegistry.register(CUBE, CubeEntity.createMobAttributes());
 
@@ -167,6 +176,7 @@ public class MobBuddies implements ModInitializer {
 							builder.suggest("spider-buddy");
 							builder.suggest("enderman-buddy");
 							builder.suggest("piglin-buddy");
+							builder.suggest("ghast-buddy");
 							return builder.buildFuture();
 						})
 						.executes(MobBuddies::executeSummonCommand) // Attach executes here
@@ -207,6 +217,10 @@ public class MobBuddies implements ModInitializer {
 		else if(choice.equals("piglin-buddy")) {
 			PiglinBuddyEntity.create(world, player, blockPos);
 			source.sendFeedback(() -> Text.literal("Summoned a piglin-buddy!"), true);
+		}
+		else if(choice.equals("ghast-buddy")) {
+			GhastBuddyEntity.create(world, player, blockPos);
+			source.sendFeedback(() -> Text.literal("Summoned a ghast-buddy!"), true);
 		}
 		else {
 			context.getSource().sendError(Text.literal("Invalid choice!"));
