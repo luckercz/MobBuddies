@@ -1,16 +1,23 @@
 package com.lucker.mobbuddies;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.ai.brain.Brain;
+import net.minecraft.entity.ai.brain.MemoryModuleType;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.entity.mob.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -21,36 +28,33 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-
-public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
-
+public class PiglinBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
     private UUID pendingOwnerUuid = null;
     private PlayerEntity owner;
     private int level = 1;
     private double customAttackDamage = 5.0; // Default attack damage
-    private double customMaxHealth = 20.0; // Default health
+    private double customMaxHealth = 20.0; // Default max health
 
-    public ZombieBuddyEntity(EntityType<? extends ZombieEntity> entityType, World world) {
+    public PiglinBuddyEntity(EntityType<? extends ZombieEntity> entityType, World world) {
         super(entityType, world);
     }
 
-    public static ZombieBuddyEntity create(World world, PlayerEntity owner, BlockPos pos) {
-        MobBuddies.LOGGER.info("Createasdad zombie buddy");
+    public static PiglinBuddyEntity create(World world, PlayerEntity owner, BlockPos pos) {
+        MobBuddies.LOGGER.info("Creating PiglinBuddyEntity");
 
-        ZombieBuddyEntity zombieBuddy = (ZombieBuddyEntity) MobBuddyHelper.Create(world, new ZombieBuddyEntity(MobBuddies.ZOMBIE_BUDDY, world), owner, pos);
+        PiglinBuddyEntity piglinBuddy = (PiglinBuddyEntity) MobBuddyHelper.Create(world, new PiglinBuddyEntity(MobBuddies.PIGLIN_BUDDY, world), owner, pos);
 
-        // 1 instance
         PlayerData playerData = StateSaverAndLoader.getPlayerState(owner);
-        BuddyData buddyData = playerData.buddies.computeIfAbsent("zombie", k -> new BuddyData());
+        BuddyData buddyData = playerData.buddies.computeIfAbsent("piglin", k -> new BuddyData());
 
-        MobBuddyHelper.Initialize(zombieBuddy, buddyData.level, buddyData.health, buddyData.name);
+        MobBuddyHelper.Initialize(piglinBuddy, buddyData.level, buddyData.health, buddyData.name);
 
-        //If unlocked
+        piglinBuddy.equipStack(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
 
         if (world instanceof ServerWorld) {
-            ((ServerWorld) world).spawnEntity(zombieBuddy);
+            ((ServerWorld) world).spawnEntity(piglinBuddy);
         }
-        return zombieBuddy;
+        return piglinBuddy;
     }
 
     public void setOwner(PlayerEntity owner) {
@@ -63,17 +67,19 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
 
     @Override
     protected void initGoals() {
-        this.targetSelector.add(1, new ActiveTargetGoal<>(this, net.minecraft.entity.mob.HostileEntity.class, true));
+        this.goalSelector.add(1, new MeleeAttackGoal(this, 1.0D, true)); // Melee attack
+        this.goalSelector.add(2, new PickUpGoldAndBarterGoal(this, 1.0D));
+        this.goalSelector.add(3, new FollowOwnerGoal(this, 1.0D, 10.0F, 40.0F)); // Follow owner
+        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F)); // Look at players
+        this.goalSelector.add(6, new LookAroundGoal(this)); // Random idle looking
 
-        this.goalSelector.add(1, new ZombieAttackGoal(this, 1.0D, true));
-        this.goalSelector.add(2, new FollowOwnerGoal(this, 1.0D, 5.0F, 30.0F)); // ADD FOLLOW
-        this.goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        //this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0D));
+        this.targetSelector.add(1, new ActiveTargetGoal<>(this, HostileEntity.class, true)); // Target hostile mobs
+        this.targetSelector.add(2, new RevengeGoal(this)); // Target entities that attacked it
     }
 
     @Override
     public boolean canTarget(EntityType<?> type) {
-        return !MobBuddies.MOB_BUDDY_TYPES.contains(type);
+        return !MobBuddies.MOB_BUDDY_TYPES.contains(type); // Avoid targeting other buddies
     }
 
     @Override
@@ -83,7 +89,7 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
             nbt.putUuid("OwnerUUID", owner.getUuid());
         }
 
-        nbt.putInt("ZombieBuddyLevel", this.level);
+        nbt.putInt("PiglinBuddyLevel", this.level);
     }
 
     @Override
@@ -94,8 +100,8 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
             this.setPendingOwner(ownerUuid);
         }
 
-        if(nbt.contains("ZombieBuddyLevel")) {
-            this.levelUp(nbt.getInt("ZombieBuddyLevel"));
+        if (nbt.contains("PiglinBuddyLevel")) {
+            this.levelUp(nbt.getInt("PiglinBuddyLevel"));
         }
     }
 
@@ -116,7 +122,7 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
     @Override
     public void tick() {
         super.tick();
-        resolvePendingOwner(); // Attempt to resolve the owner each tick
+        resolvePendingOwner(); // Ensure the owner is set correctly
     }
 
     @Override
@@ -126,76 +132,97 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
         ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.MOB_ENERGY_INGOT, ModItems.MOB_ENERGY_RAW);
-        if(actionResult == null){
+        if (actionResult == null) {
             return super.interactMob(player, hand);
-        }
-        else{
+        } else {
             return actionResult;
         }
     }
 
-    public void levelUp(int levels){
-        this.setCustomAttackDamage(this.getCustomAttackDamage()+ 1.0 * levels);
-        this.setCustomMaxHealth(this.getCustomMaxHealth() + 5.0f * levels);
+    public void levelUp(int levels) {
+        this.setCustomAttackDamage(this.getCustomAttackDamage() + 1.0 * levels); // Increase attack damage
+        this.setCustomMaxHealth(this.getCustomMaxHealth() + 2.0 * levels); // Increase max health
         this.setLevel(this.getLevel() + levels);
     }
 
-    public static DefaultAttributeContainer.Builder createCustomZombieAttributes() {
-        return ZombieBuddyEntity.createZombieAttributes()
+    public static DefaultAttributeContainer.Builder createCustomPiglinAttributes() {
+        return PiglinEntity.createPiglinAttributes()
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0)
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0);
     }
 
-    public double getCustomAttackDamage(){
+    public double getCustomAttackDamage() {
         return customAttackDamage;
     }
 
-    public void setCustomAttackDamage(double customAttackDamage){
+    public void setCustomAttackDamage(double customAttackDamage) {
         this.customAttackDamage = customAttackDamage;
         this.getAttributeInstance(EntityAttributes.GENERIC_ATTACK_DAMAGE).setBaseValue(customAttackDamage);
     }
 
-    public double getCustomMaxHealth(){
+    public double getCustomMaxHealth() {
         return customMaxHealth;
     }
 
-    public void setCustomMaxHealth(double customMaxHealth){
+    public void setCustomMaxHealth(double customMaxHealth) {
         double currentHealthPercentage = this.getHealth() / this.getMaxHealth();
         this.customMaxHealth = customMaxHealth;
         this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(customMaxHealth);
         this.setHealth((float) (customMaxHealth * currentHealthPercentage)); // Adjust current health proportionally
     }
 
-    public int getLevel(){
+    public int getLevel() {
         return level;
     }
 
-    public void setLevel(int level){
+    public void setLevel(int level) {
         this.level = level;
     }
 
     @Override
     public void setCustomName(@Nullable Text name) {
         PlayerData playerData = StateSaverAndLoader.getPlayerState(this.getOwner());
-        playerData.buddies.get("zombie").name = name.getString();
+        playerData.buddies.get("piglin").name = name.getString();
         super.setCustomName(MobBuddyHelper.CustomName(name.getString(), this.getLevel()));
     }
 
     @Override
     public boolean isCustomNameVisible() {
-        return true; // Always render the name
+        return true;
     }
+
     @Override
     public boolean shouldRenderName() {
         return true;
     }
+
     @Override
-    protected boolean burnsInDaylight(){
+    protected boolean burnsInDaylight() {
         return false;
     }
 
     @Override
     protected boolean canConvertInWater() {
         return false;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.ENTITY_PIGLIN_AMBIENT;
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource source) {
+        return SoundEvents.ENTITY_PIGLIN_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.ENTITY_PIGLIN_DEATH;
+    }
+
+    @Override
+    protected SoundEvent getStepSound() {
+        return SoundEvents.ENTITY_PIGLIN_DEATH;
     }
 }

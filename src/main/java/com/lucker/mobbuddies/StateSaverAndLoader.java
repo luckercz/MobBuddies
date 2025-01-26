@@ -58,6 +58,9 @@ public class StateSaverAndLoader extends PersistentState {
             if (!playerData.buddies.containsKey("enderman")) {
                 playerData.buddies.put("enderman", new BuddyData());
             }
+            if (!playerData.buddies.containsKey("piglin")) {
+                playerData.buddies.put("piglin", new BuddyData());
+            }
 
             playersNbt.getCompound(key).getKeys().forEach((k) -> {
                 if(k.contains("Level")) {
@@ -113,6 +116,7 @@ public class StateSaverAndLoader extends PersistentState {
             newPlayerData.buddies.put("creeper", new BuddyData());
             newPlayerData.buddies.put("spider", new BuddyData());
             newPlayerData.buddies.put("enderman", new BuddyData());
+            newPlayerData.buddies.put("piglin", new BuddyData());
             return newPlayerData;
         });
 
@@ -122,6 +126,7 @@ public class StateSaverAndLoader extends PersistentState {
         playerState.buddies.computeIfAbsent("creeper", k -> new BuddyData());
         playerState.buddies.computeIfAbsent("spider", k -> new BuddyData());
         playerState.buddies.computeIfAbsent("enderman", k -> new BuddyData());
+        playerState.buddies.computeIfAbsent("piglin", k -> new BuddyData());
 
         return playerState;
     }
