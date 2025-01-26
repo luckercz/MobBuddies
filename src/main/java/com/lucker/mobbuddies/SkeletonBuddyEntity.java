@@ -204,4 +204,9 @@ public class SkeletonBuddyEntity extends SkeletonEntity implements IMobBuddyEnti
     protected boolean isAffectedByDaylight() {
         return false;
     }
+
+    @Override
+    protected boolean isDisallowedInPeaceful() {
+        return false;
+    }
 }

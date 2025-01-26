@@ -253,4 +253,9 @@ public class CreeperBuddyEntity extends CreeperEntity implements IMobBuddyEntity
     public boolean shouldRenderName() {
         return true;
     }
+
+    @Override
+    protected boolean isDisallowedInPeaceful() {
+        return false;
+    }
 }

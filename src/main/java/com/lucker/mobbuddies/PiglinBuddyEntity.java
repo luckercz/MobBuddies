@@ -202,6 +202,11 @@ public class PiglinBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
     }
 
     @Override
+    protected boolean isDisallowedInPeaceful() {
+        return false;
+    }
+
+    @Override
     protected boolean canConvertInWater() {
         return false;
     }

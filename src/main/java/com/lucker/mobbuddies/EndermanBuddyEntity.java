@@ -196,6 +196,11 @@ public class EndermanBuddyEntity extends EndermanEntity implements  IMobBuddyEnt
         return true;
     }
 
+    @Override
+    protected boolean isDisallowedInPeaceful() {
+        return false;
+    }
+
     boolean teleportTo(Entity entity) {
         Vec3d vec3d = new Vec3d(this.getX() - entity.getX(), this.getBodyY(0.5) - entity.getEyeY(), this.getZ() - entity.getZ());
         vec3d = vec3d.normalize();

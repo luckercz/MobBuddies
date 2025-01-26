@@ -197,4 +197,9 @@ public class SpiderBuddyEntity extends SpiderEntity implements IMobBuddyEntity {
     public boolean shouldRenderName() {
         return true;
     }
+
+    @Override
+    protected boolean isDisallowedInPeaceful() {
+        return false;
+    }
 }

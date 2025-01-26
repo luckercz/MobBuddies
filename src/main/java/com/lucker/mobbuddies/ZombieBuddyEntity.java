@@ -198,4 +198,9 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
     protected boolean canConvertInWater() {
         return false;
     }
+
+    @Override
+    protected boolean isDisallowedInPeaceful() {
+        return false;
+    }
 }
