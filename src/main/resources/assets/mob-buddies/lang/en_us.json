@@ -2,5 +2,7 @@
   "item.mob-buddies.summoners_book": "Summoner's book",
   "item.mob-buddies.mob_energy_ingot": "Mob Energy Ingot",
   "item.mob-buddies.mob_energy_raw": "Raw Mob Energy",
-  "block.mob-buddies.mob_energy_ore": "Mob Energy Ore"
+  "block.mob-buddies.mob_energy_ore": "Mob Energy Ore",
+  "item.mob-buddies.soulgrain": "Soulgrain",
+  "item.mob-buddies.soulgrain_seeds" : "Soulgrain Seeds"
 }

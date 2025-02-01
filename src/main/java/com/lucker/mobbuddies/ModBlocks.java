@@ -3,6 +3,7 @@ package com.lucker.mobbuddies;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.CropBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -20,6 +21,12 @@ public class ModBlocks {
     public static final Block MOB_ENERGY_ORE = register(
             new Block(AbstractBlock.Settings.create().sounds(BlockSoundGroup.ANCIENT_DEBRIS).requiresTool().strength(4.0f)),
             "mob_energy_ore",
+            true
+    );
+
+    public static final CropBlock SOULGRAIN_CROP = (CropBlock) register(
+            new SoulgrainBlock(AbstractBlock.Settings.create().nonOpaque().noCollision().ticksRandomly().breakInstantly().sounds(BlockSoundGroup.CROP)),
+            "soulgrain_crop",
             true
     );
 
