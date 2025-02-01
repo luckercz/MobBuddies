@@ -96,13 +96,6 @@ public class MobBuddies implements ModInitializer {
 	);
 
 
-	public static final EntityType<CubeEntity> CUBE = Registry.register(
-			Registries.ENTITY_TYPE,
-			Identifier.of("mob-buddies", "cube"),
-			EntityType.Builder.create(CubeEntity::new, SpawnGroup.CREATURE).dimensions(0.75f, 0.75f).build("cube")
-	);
-
-
 	public static final Set<EntityType<?>> MOB_BUDDY_TYPES = Set.of(
 			ZOMBIE_BUDDY,
 			SKELETON_BUDDY,
@@ -111,8 +104,7 @@ public class MobBuddies implements ModInitializer {
 			ENDERMAN_BUDDY,
 			PIGLIN_BUDDY,
 			GHAST_BUDDY,
-			SHULKER_BUDDY,
-			CUBE
+			SHULKER_BUDDY
 	);
 
 	public static final Map<EntityType, String> NBT_Names = Map.of(
@@ -145,8 +137,6 @@ public class MobBuddies implements ModInitializer {
 		FabricDefaultAttributeRegistry.register(PIGLIN_BUDDY, PiglinBuddyEntity.createCustomPiglinAttributes());
 		FabricDefaultAttributeRegistry.register(GHAST_BUDDY, GhastBuddyEntity.createCustomGhastAttributes());
 		FabricDefaultAttributeRegistry.register(SHULKER_BUDDY, ShulkerBuddyEntity.createCustomShulkerAttributes());
-
-		FabricDefaultAttributeRegistry.register(CUBE, CubeEntity.createMobAttributes());
 
 		//Initialize Items
 		ModItems.initialize();

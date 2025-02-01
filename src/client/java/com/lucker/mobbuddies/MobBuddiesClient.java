@@ -14,13 +14,10 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.util.Identifier;
 
 public class MobBuddiesClient implements ClientModInitializer {
-	public static final EntityModelLayer MODEL_CUBE_LAYER = new EntityModelLayer(Identifier.of("mob-buddies", "cube"), "main");
 
 	@Override
 	public void onInitializeClient() {
 		// This entrypoint is suitable for setting up client-specific logic, such as rendering.
-
-		EntityRendererRegistry.register(MobBuddies.CUBE, CubeEntityRenderer::new);
 
 		//Register Buddy renderers
 		EntityRendererRegistry.register(MobBuddies.ZOMBIE_BUDDY, ZombieEntityRenderer::new);
@@ -35,7 +32,5 @@ public class MobBuddiesClient implements ClientModInitializer {
 		//Transparent crop cutout
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.SOULGRAIN_CROP);
 
-		EntityModelLayerRegistry.registerModelLayer(MODEL_CUBE_LAYER, CubeEntityModel::getTexturedModelData);
 	}
-
 }
