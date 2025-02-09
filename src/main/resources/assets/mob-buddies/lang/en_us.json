@@ -4,5 +4,21 @@
   "item.mob-buddies.mob_energy_raw": "Raw Mob Energy",
   "block.mob-buddies.mob_energy_ore": "Mob Energy Ore",
   "item.mob-buddies.soulgrain": "Soulgrain",
-  "item.mob-buddies.soulgrain_seeds" : "Soulgrain Seeds"
+  "item.mob-buddies.soulgrain_seeds" : "Soulgrain Seeds",
+  "item.mob-buddies.rotten_core" : "Rotten Core",
+  "item.mob-buddies.decayed_loaf" : "Decayed Loaf",
+  "item.mob-buddies.bony_brew" : "Bony Brew",
+  "item.mob-buddies.bone_marrow_biscuit" : "Bone Marrow Biscuit",
+  "item.mob-buddies.charged_meal" : "Charged Meal",
+  "item.mob-buddies.exploding_crust" : "Exploding Crust",
+  "item.mob-buddies.void_essence" : "Void Essence",
+  "item.mob-buddies.shadowbread" : "Shadowbread",
+  "item.mob-buddies.blazing_tears" : "Blazing Tears",
+  "item.mob-buddies.misty_flan" : "Misty Flan",
+  "item.mob-buddies.boxed_delight" : "Boxed Delight",
+  "item.mob-buddies.shell_cake" : "Shell Cake",
+  "item.mob-buddies.gilded_treat" : "Gilded Treat",
+  "item.mob-buddies.golden_ration" : "Golden Ration",
+  "item.mob-buddies.webbed_wrap" : "Webbed Wrap",
+  "item.mob-buddies.sticky_pastry" : "Sticky Pastry"
 }

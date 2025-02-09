@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "mob-buddies:soulgrain"
+        },
+        {
+            "item": "minecraft:bone"
+        }
+    ],
+    "result": {
+        "id": "mob-buddies:bone_marrow_biscuit",
+        "count": 1
+    }
+}
