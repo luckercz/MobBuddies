@@ -138,7 +138,7 @@ public class ShulkerBuddyEntity extends ShulkerEntity implements IMobBuddyEntity
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.MOB_ENERGY_INGOT, ModItems.MOB_ENERGY_RAW);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.SHELL_CAKE, ModItems.BOXED_DELIGHT);
         if (actionResult == null) {
             return super.interactMob(player, hand);
         } else {

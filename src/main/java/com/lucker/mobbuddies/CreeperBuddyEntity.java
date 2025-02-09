@@ -198,7 +198,7 @@ public class CreeperBuddyEntity extends CreeperEntity implements IMobBuddyEntity
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.MOB_ENERGY_INGOT, ModItems.MOB_ENERGY_RAW);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.EXPLODING_CRUST, ModItems.CHARGED_MEAL);
         if (actionResult == null) {
             return super.interactMob(player, hand);
         } else {

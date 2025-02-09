@@ -125,7 +125,7 @@ public class ZombieBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.MOB_ENERGY_INGOT, ModItems.MOB_ENERGY_RAW);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.DECAYED_LOAF, ModItems.ROTTEN_CORE);
         if(actionResult == null){
             return super.interactMob(player, hand);
         }
