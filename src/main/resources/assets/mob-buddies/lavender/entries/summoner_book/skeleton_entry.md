@@ -8,7 +8,7 @@
 ```xml owo-ui
 <stack-layout>
     <children>
-        <button>
+        <button id="summonSkeletonButton">
             <text>owo</text>
             <horizontal-alignment>center</horizontal-alignment>
             <on-press>
