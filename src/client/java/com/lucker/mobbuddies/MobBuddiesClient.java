@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
@@ -18,7 +19,9 @@ import net.minecraft.client.render.entity.model.EntityModelLayers;
 import net.minecraft.client.render.entity.model.PiglinEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.TypedActionResult;
 
 public class MobBuddiesClient implements ClientModInitializer {
 
@@ -39,16 +42,24 @@ public class MobBuddiesClient implements ClientModInitializer {
 		//Transparent crop cutout
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), ModBlocks.SOULGRAIN_CROP);
 
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (client.player != null) {
-				openBookUI(client.player);
+		UseItemCallback.EVENT.register((player, world, hand) ->
+		{
+			// Check if it's the client-side
+			if (world.isClient()) {
+				// Check if the player is holding a normal book
+				if (player.getStackInHand(hand).isOf(Items.BOOK)) {
+					openBookUI();
+					return TypedActionResult.success(player.getStackInHand(hand));
+				}
 			}
+			return TypedActionResult.pass(player.getStackInHand(hand));
 		});
 	}
 
-	private void openBookUI(ClientPlayerEntity player) {
-		if (MinecraftClient.getInstance() != null) {
-			MinecraftClient.getInstance().setScreen(new MyScreen()); // Open UI when player joins
+	private void openBookUI() {
+		MinecraftClient client = MinecraftClient.getInstance();
+		if (client != null) {
+			client.setScreen(new MyScreen()); // Open UI when player joins
 		}
 	}
 }

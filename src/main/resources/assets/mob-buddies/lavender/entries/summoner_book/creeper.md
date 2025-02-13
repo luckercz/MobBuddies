@@ -7,4 +7,4 @@
 
 Creeper
 
-{owo:button "Click me" my_custom_action}
+<MyScreen@MyScreen>
