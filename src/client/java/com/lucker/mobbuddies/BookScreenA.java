@@ -34,8 +34,8 @@ public class BookScreenA extends BaseOwoScreen<FlowLayout> {
         Component leftButtonComponent = ScreenHelper.CreateSummonButton("zombie-buddy", 25);
         Component rightButtonComponent =  ScreenHelper.CreateSummonButton("skeleton-buddy", 75);
 
-        Component previousButtonComponent = ScreenHelper.CreateChangeButton("<-", new BookScreenD(), 10);
-        Component nextButtonComponent = ScreenHelper.CreateChangeButton(">", new BookScreenB(), 89);
+        Component previousButtonComponent = ScreenHelper.CreateChangeButton("<-", new BookScreenMain(), 10);
+        Component nextButtonComponent = ScreenHelper.CreateChangeButton("->", new BookScreenB(), 89);
 
         //Define screen using Components
         rootComponent

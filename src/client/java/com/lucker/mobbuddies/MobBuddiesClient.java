@@ -5,9 +5,12 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.*;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.TypedActionResult;
 
 public class MobBuddiesClient implements ClientModInitializer {
@@ -34,7 +37,10 @@ public class MobBuddiesClient implements ClientModInitializer {
 			// Check if it's the client-side
 			if (world.isClient()) {
 				// Check if the player is holding a normal book
-				if (player.getStackInHand(hand).isOf(Items.BOOK)) {
+				if (player.getStackInHand(hand).isOf(ModItems.SUMMONERS_BOOK)) {
+					if (player != null) {
+						player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 2.0f, 1.0f);
+					}
 					openBookUI();
 					return TypedActionResult.success(player.getStackInHand(hand));
 				}
@@ -46,7 +52,7 @@ public class MobBuddiesClient implements ClientModInitializer {
 	private void openBookUI() {
 		MinecraftClient client = MinecraftClient.getInstance();
 		if (client != null) {
-			client.setScreen(new BookScreenA()); // Open UI when player joins
+			client.setScreen(new BookScreenMain()); // Open UI when player joins
 		}
 	}
 }

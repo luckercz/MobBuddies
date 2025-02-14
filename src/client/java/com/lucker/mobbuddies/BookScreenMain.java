@@ -11,10 +11,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class BookScreenB extends BaseOwoScreen<FlowLayout> {
+public class BookScreenMain extends BaseOwoScreen<FlowLayout> {
 
     // Path to the custom background image
-    private static final Identifier BACKGROUND_TEXTURE = Identifier.of("mob-buddies", "textures/gui/book_page_b.png");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.of("mob-buddies", "textures/gui/book_page_main.png");
 
     @Override
     protected @NotNull OwoUIAdapter<FlowLayout> createAdapter() {
@@ -32,11 +32,8 @@ public class BookScreenB extends BaseOwoScreen<FlowLayout> {
         Component backgroundComponent = Components.texture(BACKGROUND_TEXTURE, 0, 0, 256, 256)
                 .sizing(Sizing.fixed(300), Sizing.fixed(200));
 
-        Component leftButtonComponent = ScreenHelper.CreateSummonButton("creeper-buddy", 25);
-        Component rightButtonComponent =  ScreenHelper.CreateSummonButton("spider-buddy", 75);
-
-        Component previousButtonComponent = ScreenHelper.CreateChangeButton("<-", new BookScreenA(), 10);
-        Component nextButtonComponent = ScreenHelper.CreateChangeButton("->", new BookScreenC(), 89);
+        Component previousButtonComponent = ScreenHelper.CreateChangeButton("<-", new BookScreenD(), 10);
+        Component nextButtonComponent = ScreenHelper.CreateChangeButton("->", new BookScreenA(), 89);
 
         //Define screen using Components
         rootComponent
@@ -45,8 +42,6 @@ public class BookScreenB extends BaseOwoScreen<FlowLayout> {
                 .verticalAlignment(VerticalAlignment.CENTER);
 
         layout.child(backgroundComponent);
-        layout.child(leftButtonComponent);
-        layout.child(rightButtonComponent);
         layout.child(previousButtonComponent);
         layout.child(nextButtonComponent);
 

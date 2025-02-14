@@ -16,10 +16,7 @@
         }
     },
     "result": {
-        "id": "lavender:dynamic_book",
-        "components": {
-            "lavender:book_id": "mob-buddies:summoner_book"
-        },
+        "id": "mob-buddies:summoners_book",
         "count": 1
     }
 }

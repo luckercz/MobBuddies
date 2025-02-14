@@ -10,8 +10,8 @@ import net.minecraft.util.Identifier;
 
 public class ModItems {
     public static void initialize(){
-//        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
-//                .register((itemGroup) -> itemGroup.add(ModItems.SUMMONERS_BOOK));
+        ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS)
+                .register((itemGroup) -> itemGroup.add(ModItems.SUMMONERS_BOOK));
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.INGREDIENTS)
                 .register((itemGroup) -> itemGroup.add(ModItems.MOB_ENERGY_RAW));
