@@ -143,7 +143,7 @@ public class SkeletonBuddyEntity extends SkeletonEntity implements IMobBuddyEnti
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.BONE_MARROW_BISCUIT, ModItems.BONY_BREW);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.SKELETON_HEAL, ModItems.SKELETON_UPGRADE);
         if(actionResult == null){
             return super.interactMob(player, hand);
         }

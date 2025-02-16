@@ -134,7 +134,7 @@ public class PiglinBuddyEntity extends ZombieEntity implements IMobBuddyEntity {
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.GOLDEN_RATION, ModItems.GILDED_TREAT);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.PIGLIN_HEAL, ModItems.PIGLIN_UPGRADE);
         if (actionResult == null) {
             return super.interactMob(player, hand);
         } else {

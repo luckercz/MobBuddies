@@ -24,38 +24,37 @@ public class ModItems {
 
         //Buddy Food
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.ROTTEN_CORE));
+                .register((itemGroup) -> itemGroup.add(ModItems.ZOMBIE_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.DECAYED_LOAF));
+                .register((itemGroup) -> itemGroup.add(ModItems.ZOMBIE_HEAL));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.BONY_BREW));
+                .register((itemGroup) -> itemGroup.add(ModItems.SKELETON_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.BONE_MARROW_BISCUIT));
+                .register((itemGroup) -> itemGroup.add(ModItems.SKELETON_HEAL));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.WEBBED_WRAP));
+                .register((itemGroup) -> itemGroup.add(ModItems.SPIDER_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.STICKY_PASTRY));
+                .register((itemGroup) -> itemGroup.add(ModItems.SPIDER_HEAL));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.CHARGED_MEAL));
+                .register((itemGroup) -> itemGroup.add(ModItems.CREEPER_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.EXPLODING_CRUST));
+                .register((itemGroup) -> itemGroup.add(ModItems.CREEPER_HEAL));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.VOID_ESSENCE));
+                .register((itemGroup) -> itemGroup.add(ModItems.ENDERMAN_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.SHADOWBREAD));
+                .register((itemGroup) -> itemGroup.add(ModItems.ENDERMAN_HEAL));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.BLAZING_TEARS));
+                .register((itemGroup) -> itemGroup.add(ModItems.GHAST_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.MISTY_FLAN));
+                .register((itemGroup) -> itemGroup.add(ModItems.GHAST_HEAL));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.BOXED_DELIGHT));
+                .register((itemGroup) -> itemGroup.add(ModItems.SHULKER_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.SHELL_CAKE));
+                .register((itemGroup) -> itemGroup.add(ModItems.SHULKER_HEAL));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.GILDED_TREAT));
+                .register((itemGroup) -> itemGroup.add(ModItems.PIGLIN_UPGRADE));
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.FOOD_AND_DRINK)
-                .register((itemGroup) -> itemGroup.add(ModItems.GOLDEN_RATION));
-
+                .register((itemGroup) -> itemGroup.add(ModItems.PIGLIN_HEAL));
     }
 
     public static final Item SUMMONERS_BOOK = register(
@@ -84,83 +83,83 @@ public class ModItems {
     );
 
     //Zombie
-    public static final Item ROTTEN_CORE = register(
+    public static final Item ZOMBIE_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "rotten_core"
+            "zombie_upgrade"
     );
-    public static final Item DECAYED_LOAF = register(
+    public static final Item ZOMBIE_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "decayed_loaf"
+            "zombie_heal"
     );
 
     //Skeleton
-    public static final Item BONY_BREW = register(
+    public static final Item SKELETON_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "bony_brew"
+            "skeleton_upgrade"
     );
-    public static final Item BONE_MARROW_BISCUIT = register(
+    public static final Item SKELETON_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "bone_marrow_biscuit"
+            "skeleton_heal"
     );
 
     //Spider
-    public static final Item WEBBED_WRAP = register(
+    public static final Item SPIDER_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "webbed_wrap"
+            "spider_upgrade"
     );
-    public static final Item STICKY_PASTRY = register(
+    public static final Item SPIDER_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "sticky_pastry"
+            "spider_heal"
     );
 
     //Creeper
-    public static final Item CHARGED_MEAL = register(
+    public static final Item CREEPER_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "charged_meal"
+            "creeper_upgrade"
     );
-    public static final Item EXPLODING_CRUST = register(
+    public static final Item CREEPER_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "exploding_crust"
+            "creeper_heal"
     );
 
     //Enderman
-    public static final Item VOID_ESSENCE = register(
+    public static final Item ENDERMAN_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "void_essence"
+            "enderman_upgrade"
     );
-    public static final Item SHADOWBREAD = register(
+    public static final Item ENDERMAN_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "shadowbread"
+            "enderman_heal"
     );
 
     //Ghast
-    public static final Item BLAZING_TEARS = register(
+    public static final Item GHAST_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "blazing_tears"
+            "ghast_upgrade"
     );
-    public static final Item MISTY_FLAN = register(
+    public static final Item GHAST_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "misty_flan"
+            "ghast_heal"
     );
 
     //Shulker
-    public static final Item BOXED_DELIGHT = register(
+    public static final Item SHULKER_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "boxed_delight"
+            "shulker_upgrade"
     );
-    public static final Item SHELL_CAKE = register(
+    public static final Item SHULKER_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "shell_cake"
+            "shulker_heal"
     );
 
     //Piglin
-    public static final Item GILDED_TREAT = register(
+    public static final Item PIGLIN_UPGRADE = register( //Upgrade
             new Item(new Item.Settings()),
-            "gilded_treat"
+            "piglin_upgrade"
     );
-    public static final Item GOLDEN_RATION = register(
+    public static final Item PIGLIN_HEAL = register( //Heal
             new Item(new Item.Settings()),
-            "golden_ration"
+            "piglin_heal"
     );
 
     public static Item register(Item item, String id){

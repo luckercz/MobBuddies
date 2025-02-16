@@ -135,7 +135,7 @@ public class EndermanBuddyEntity extends EndermanEntity implements IMobBuddyEnti
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.SHADOWBREAD, ModItems.VOID_ESSENCE);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.ENDERMAN_HEAL, ModItems.ENDERMAN_UPGRADE);
         if (actionResult == null) {
             return super.interactMob(player, hand);
         } else {

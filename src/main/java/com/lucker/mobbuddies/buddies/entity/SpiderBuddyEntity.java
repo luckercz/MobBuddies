@@ -126,7 +126,7 @@ public class SpiderBuddyEntity extends SpiderEntity implements IMobBuddyEntity {
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.STICKY_PASTRY, ModItems.WEBBED_WRAP);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.SPIDER_HEAL, ModItems.SPIDER_UPGRADE);
         if (actionResult == null) {
             return super.interactMob(player, hand);
         } else {

@@ -130,7 +130,7 @@ public class GhastBuddyEntity extends GhastEntity implements IMobBuddyEntity {
             return ActionResult.SUCCESS;
         }
         PlayerData playerData = StateSaverAndLoader.getPlayerState(player);
-        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.MISTY_FLAN, ModItems.BLAZING_TEARS);
+        ActionResult actionResult = MobBuddyHelper.InteractMob(player, this, hand, ModItems.GHAST_HEAL, ModItems.GHAST_UPGRADE);
         if (actionResult == null) {
             return super.interactMob(player, hand);
         } else {

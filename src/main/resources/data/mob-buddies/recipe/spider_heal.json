@@ -1,0 +1,15 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        {
+            "item": "mob-buddies:soulgrain"
+        },
+        {
+            "item": "minecraft:string"
+        }
+    ],
+    "result": {
+        "id": "mob-buddies:spider_heal",
+        "count": 1
+    }
+}
